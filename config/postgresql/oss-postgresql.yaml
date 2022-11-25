@@ -1,0 +1,44 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: stk-secret-reader
+  labels:
+    servicebinding.io/controller: "true"
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgresql-secret
+  namespace: dev
+type: Opaque
+stringData:
+  type: postgresql
+  provider: vac
+  host: postgresql-music
+  port: "5432"
+  database: music
+  username: postgres
+  password: postgres
+  postgres-password: postgres
+---
+apiVersion: v1
+items:
+- apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+  kind: ResourceClaim
+  metadata:
+    name: music-database
+    namespace: dev
+  spec:
+    ref:
+      apiVersion: v1
+      kind: Secret
+      name: postgresql-secret

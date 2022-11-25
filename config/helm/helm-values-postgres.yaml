@@ -1,0 +1,11 @@
+primary:
+  persistence:
+    enabled: true
+    storageClass: tanzu-sp
+auth:
+  database: music
+  username: postgres
+global:
+  postgresql:
+    auth:
+      existingSecret: postgresql-secret
